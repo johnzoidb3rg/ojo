@@ -153,14 +153,17 @@ public class SurveillanceFragment extends Fragment {
         Settings settings = Settings.fromDisk(getContext());
         List<Camera> cc = settings.getCameras();
 
-        int elemsPerSide = calcGridSideElements(cc.size());
+        int grid[] = calcGridSideElements(cc.size());
+        int rows = grid[0];
+        int columns = grid[1];
+
         int camIdx = 0;
-        for (int r = 0; r < elemsPerSide; r++) {
+        for (int r = 0; r < rows; r++) {
             // Create row and add to row container
             LinearLayout row = new LinearLayout(getContext());
             binding.gridRowContainer.addView(row, rowLayoutParams);
             // Add camera viewers to the row
-            for (int c = 0; c < elemsPerSide; c++) {
+            for (int c = 0; c < columns; c++) {
                 if ( camIdx < cc.size() ) {
                     Camera cam = cc.get(camIdx);
                     CameraView cv = addCameraView(cam, row);
@@ -239,13 +242,18 @@ public class SurveillanceFragment extends Fragment {
     }
 
     /**
-     * Returns the number of elements per side needed to create a grid that can contain the provided elements number.
+     * Returns the number of rows and columns needed to create a grid that can contain the provided elements number.
+     * Es: to display 2 elements is needed a 1 row x 2 columns grid
      * Es: to display 3 elements is needed a 4-element grid, with 2 elements per side (a 2x2 grid)
+     * Es: to display 6 elements is needed a 2 rows x 3 columns grid
      * Es: to display 7 elements is needed a 9-element grid, with 3 elements per side (a 3x3 grid)
      * @param elements
      */
-    private int calcGridSideElements(int elements) {
-        return (int)(Math.ceil(Math.sqrt(elements)));
+    private int[] calcGridSideElements(int elements) {
+        int columns = (int)(Math.ceil(Math.sqrt(elements)));
+        // remove last row is empty
+        int rows = ((columns - 1) * columns >= elements) ? columns - 1 : columns;
+        return new int[] {rows, columns};
     }
 
     /**
