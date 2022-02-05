@@ -251,7 +251,7 @@ public class SurveillanceFragment extends Fragment {
      */
     private int[] calcGridSideElements(int elements) {
         int columns = (int)(Math.ceil(Math.sqrt(elements)));
-        // remove last row is empty
+        // remove last row if empty
         int rows = ((columns - 1) * columns >= elements) ? columns - 1 : columns;
         return new int[] {rows, columns};
     }
